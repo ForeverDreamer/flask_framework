@@ -3,6 +3,7 @@ from werkzeug.test import create_environ
 from werkzeug.wrappers import Request
 from werkzeug.wrappers import Response
 from io import StringIO
+from datetime import datetime, timezone
 
 environ = create_environ('/foo', 'http://localhost:8080/')
 print(environ['PATH_INFO'])
@@ -73,4 +74,23 @@ response.headers['content-length'] = len(response.data)
 print(response.status)
 response.status = '404 Not Found'
 print(response.status_code)
+print(response.content_length)
+response.date = datetime(2009, 2, 20, 17, 42, 51, tzinfo=timezone.utc)
+print(response.headers['Date'])
+response.set_etag("12345-abcd")
+print(response.headers['etag'])
+print(response.get_etag())
+response.set_etag("12345-abcd", weak=True)
+print(response.get_etag())
+response.content_language.add('en-us')
+response.content_language.add('en')
+print(response.headers['Content-Language'])
+response.headers['Content-Language'] = 'de-AT, de'
+print(response.content_language)
+response.www_authenticate.set_basic("My protected resource")
+print(response.headers['www-authenticate'])
+response.set_cookie('name', 'value')
+print(response.headers['Set-Cookie'])
+response.set_cookie('name2', 'value2')
+print(response.headers.getlist('Set-Cookie'))
 print('--------------------------------------------------')
